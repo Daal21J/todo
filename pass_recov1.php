@@ -109,8 +109,8 @@ if (isset($_POST['send'])) {
             $mail->isSMTP(); //Send using SMTP
             $mail->Host = 'smtp.gmail.com'; //Set the SMTP server to send through
             $mail->SMTPAuth = true; //Enable SMTP authentication
-            $mail->Username = 'pro17dal03@gmail.com'; //SMTP username
-            $mail->Password = 'oinrspxfkhsvanzd';
+            $mail->Username = 'email'; //SMTP username
+            $mail->Password = 'pass';
             $mail->SMTPOptions = array(
                 'ssl' => array(
                     'verify_peer' => false,
@@ -123,8 +123,8 @@ if (isset($_POST['send'])) {
             $mail->Port = 465; //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
             //Recipients
-            $mail->setFrom('pro17dal03@gmail.com', 'OTP verification');
-            // $mail->addAddress('pro17dal03@gmail.com', 'Joe User');     //Add a recipient
+            $mail->setFrom('email', 'OTP verification');
+            // $mail->addAddress('email', 'Joe User');     //Add a recipient
             $mail->addAddress($email); //Name is optional
 
             // HTML body
