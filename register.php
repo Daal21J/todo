@@ -1,18 +1,14 @@
 <?php 
-        require 'header.php';
- ?>
-
-<?php 
-
+require 'header.php';
 require "conn.php";
 require 'src/Exception.php';
 require 'src/PHPMailer.php';
 require 'src/SMTP.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-
-
+      
 if(isset($_SESSION['username'])){
     header("location: main.php");
 }
@@ -40,70 +36,70 @@ if (isset($_POST['submit'])) {
         }
 
         if (count($errors) == 0) {
-            /*$insert = $conn->prepare("INSERT INTO users (email,username,pass) values (:email,:username,:pass)");
+            $insert = $conn->prepare("INSERT INTO users (email,username,pass,status) values (:email,:username,:pass,:stat)");
             $insert->execute(
             [
             ':email' => $email,
             ':username' => $username,
             ':pass' => password_hash($password, PASSWORD_BCRYPT),
+            ':stat' => 0,
             ]
             );
-            echo '<script>alert("Account created successfully ♡"); 
-            window.location.href="login.php";
-            </script>';
-            */
+
+            $otp = rand(100000,999999);
+            $_SESSION['otp'] = $otp;
+            $_SESSION['email'] = $email;
+
+         $mail = new PHPMailer(true);
+        
+         try {
+            //Server settings
+            //$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+            $mail->isSMTP();                                            //Send using SMTP
+            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+            $mail->Username   = 'pro17dal03@gmail.com';                     //SMTP username
+            $mail->Password   = 'oinrspxfkhsvanzd';
+            $mail->SMTPOptions = array(
+				'ssl' => array(
+				'verify_peer' => false,
+				'verify_peer_name' => false,
+				'allow_self_signed' => true
+				)
+			);                         
+			$mail->SMTPSecure = 'ssl';                           
+            //$mail->SMTPSecure='tls';           //Enable implicit TLS encryption
+            $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+        
+            //Recipients
+            $mail->setFrom('pro17dal03@gmail.com', 'OTP verification');
+           // $mail->addAddress('pro17dal03@gmail.com', 'Joe User');     //Add a recipient
+            $mail->addAddress($email);               //Name is optional
+            //$mail->addReplyTo('info@example.com', 'Information');
+            //$mail->addCC('cc@example.com');
+            //$mail->addBCC('bcc@example.com');
+        
+            //Attachments
+            //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+            //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+        
+            //Content
+            $mail->isHTML(true);                                  //Set email format to HTML
+            $mail->Subject = 'Verify your email';
+            $mail->Body    = '<p>Dear user, </p> <h3>Your verify OTP code is: '.$otp.' <br></h3>';
+            //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+        
+            $mail->send();
             echo '<script>alert("Email Verification is needed."); 
+            window.location.replace("verif.php");
             </script>';
-
-            //Create an instance; passing `true` enables exceptions
-            $mail = new PHPMailer(true);
-
-            try {
-                $otp = range(100000, 999999);
-                $_SESSION['otp'] = $otp;
-                //Server settings
-                //$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-                $mail->isSMTP(); //Send using SMTP
-                $mail->Host = 'smtp.gmail.com'; //Set the SMTP server to send through
-                $mail->SMTPAuth = true; //Enable SMTP authentication
-                $mail->Username = 'freedaal02@gmail.com'; //SMTP username
-                $mail->Password = 'ymzyfqtqtulchqph'; //SMTP password
-                //$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-                $mail->Port = 587; //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
-                //Recipients
-                $mail->setFrom('freedaal02@gmail.com', 'Maitodo');
-                $mail->addAddress($_POST['email']); //Add a recipient
-                //$mail->addAddress('ellen@example.com'); //Name is optional
-                //$mail->addReplyTo('info@example.com', 'Information');
-                //$mail->addCC('cc@example.com');
-                //$mail->addBCC('bcc@example.com');
-
-                //Attachments
-                //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-                //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
-
-                //Content
-                $mail->isHTML(true); //Set email format to HTML
-                $mail->Subject = 'Here is the subject';
-                $mail->Body = 'This is the HTML message body <b>in bold!</b>';
-                $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-                $mail->send();
-                echo 'Message has been sent';
-            } catch (Exception $e) {
-                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-                header("Location: mailVerification.php");
-
-
-            }
-
-
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
         }
     }
 }
 ?>
-
 
 
 
